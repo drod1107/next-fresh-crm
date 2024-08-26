@@ -8,13 +8,20 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      colors: {
+        primary: "#074bae",
+        secondary: "#c66be4",
+        tertiary: "#f7f7f7",
+        quaternary: "#9962d8"
       },
-    },
+      // lato and hind fonts applied uniformly
+      fontFamily: { 
+        lato: ["Lato", "sans-serif"],
+        hind: ["Hind", "sans-serif"]
+      }
+    }
   },
-  plugins: [],
+  plugins: []
 };
+
 export default config;
