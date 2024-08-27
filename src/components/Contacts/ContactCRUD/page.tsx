@@ -1,10 +1,12 @@
+// src > components > Contacts > ContactCRUD > page.tsx
+
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ContactForm from '../ContactForm/page';
 import ContactList from '../ContactList/page';
 import ClientDetailView from '../../Dashboard/Clients/ClientDetailView/page';
-import { TextField, Modal, Box } from '@mui/material';
+import { TextField, Modal } from '@mui/material';
 import { Contact } from '@/types/contact';
 
 const ContactCRUD: React.FC = () => {
@@ -13,7 +15,6 @@ const ContactCRUD: React.FC = () => {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [detailViewOpen, setDetailViewOpen] = useState(false);
-  const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchContacts();
@@ -40,7 +41,7 @@ const ContactCRUD: React.FC = () => {
     if (searchTerm.trim() === '') {
       setFilteredContacts(contacts);
     } else {
-      const filtered = contacts.filter(contact => 
+      const filtered = contacts.filter(contact =>
         `${contact.firstName} ${contact.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
         contact.email.toLowerCase().includes(searchTerm.toLowerCase())
       );
@@ -56,24 +57,13 @@ const ContactCRUD: React.FC = () => {
     setContacts(prevContacts =>
       prevContacts.map(contact => contact._id === updatedContact._id ? updatedContact : contact)
     );
-    setSelectedContact(null);
+    setSelectedContact(updatedContact);
   };
 
   const handleContactDeleted = (deletedContactId: string) => {
     setContacts(prevContacts =>
       prevContacts.filter(contact => contact._id !== deletedContactId)
     );
-  };
-
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleEditContact = (contact: Contact) => {
-    setSelectedContact(contact);
-    if (formRef.current) {
-      formRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
   };
 
   const handleViewContact = (contact: Contact) => {
@@ -89,25 +79,25 @@ const ContactCRUD: React.FC = () => {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Contact Management</h2>
-      <div ref={formRef}>
+      <details className="mb-4" open={false}>
+        <summary className="font-bold mb-2 text-lg cursor-pointer hover:underline focus:underline">Add/Edit Contact</summary>
         <ContactForm
           selectedContact={selectedContact}
           onContactCreated={handleContactCreated}
           onContactUpdated={handleContactUpdated}
         />
-      </div>
-      <div className="mb-4">
-        <TextField
-          label="Search Contacts"
-          variant="outlined"
-          fullWidth
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-      </div>
+      </details>
+      <TextField
+        label="Search Contacts"
+        variant="outlined"
+        fullWidth
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="mb-4"
+      />
       <ContactList
         contacts={filteredContacts}
-        onEditContact={handleEditContact}
+        onEditContact={setSelectedContact}
         onDeleteContact={handleContactDeleted}
         onViewContact={handleViewContact}
       />
@@ -117,14 +107,15 @@ const ContactCRUD: React.FC = () => {
         aria-labelledby="client-detail-modal"
         aria-describedby="client-detail-description"
       >
-        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl">
+        <div>
           {selectedContact && (
             <ClientDetailView
               contact={selectedContact}
               onClose={handleCloseDetailView}
+              onContactUpdated={handleContactUpdated}
             />
           )}
-        </Box>
+        </div>
       </Modal>
     </div>
   );

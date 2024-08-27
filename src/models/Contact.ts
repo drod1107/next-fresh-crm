@@ -1,3 +1,5 @@
+// src > models > Contact.ts
+
 import mongoose from 'mongoose';
 
 const ContactSchema = new mongoose.Schema({

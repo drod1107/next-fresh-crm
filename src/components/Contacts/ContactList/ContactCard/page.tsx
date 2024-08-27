@@ -1,17 +1,8 @@
+// src > components > Contacts > ContactList > ContactCard > page.tsx
+
 import React from 'react';
 import { Card, CardContent, Typography, Chip } from '@mui/material';
-
-interface Contact {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  address?: string;
-  phoneNumber?: string;
-  altPhone?: string;
-  labels?: string[];
-  notes?: string;
-}
+import { Contact } from '@/types/contact';
 
 interface ContactCardProps {
   contact: Contact;

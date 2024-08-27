@@ -1,40 +1,24 @@
-import type { Metadata } from "next";
-import "./globals.css";
+//  src > app > layout.tsx
+
+import { ClerkProvider } from '@clerk/nextjs';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from "../theme";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton
-} from '@clerk/nextjs'
-
-export const metadata: Metadata = {
-  title: "CRM App",
-  description: "Custom CRM application",
-};
+import "./globals.css";
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <ClerkProvider>
     <html lang="en">
-      <body className="font-lato bg-tertiary">
+      <body>
+      <ClerkProvider afterSignOutUrl={"/"}>
         <ThemeProvider theme={theme}>
-        <SignedOut>
-            <SignInButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
           {children}
         </ThemeProvider>
+      </ClerkProvider>
       </body>
     </html>
-    </ClerkProvider>
   );
 }

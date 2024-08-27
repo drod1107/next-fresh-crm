@@ -1,3 +1,5 @@
+// src > components > Contacts > ContactForm > page.tsx
+
 import React, { useState, useEffect } from 'react';
 import { Button, TextField, Paper, Chip } from '@mui/material';
 import { Contact } from '@/types/contact';
@@ -51,7 +53,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const contactData: Omit<Contact, '_id' | 'createdAt' | 'updatedAt'> = {
+    const contactData: Omit<Contact, '_id' | 'createdAt' | 'updatedAt' | 'documents'> = {
       firstName,
       lastName,
       email,

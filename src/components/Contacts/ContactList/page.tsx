@@ -1,6 +1,8 @@
+// src > components > Contacts > ContactList > page.tsx
+
 import React from 'react';
 import { List, ListItem, Button } from '@mui/material';
-import ContactCard from '../ContactCard/page';
+import ContactCard from './ContactCard/page';
 import { Contact } from '@/types/contact';
 
 interface ContactListProps {
@@ -41,10 +43,7 @@ const ContactList: React.FC<ContactListProps> = ({
             <ContactCard contact={contact} />
             <div className="mt-2 flex justify-end">
               <Button onClick={() => onViewContact(contact)} className="mr-2">
-                View
-              </Button>
-              <Button onClick={() => onEditContact(contact)} className="mr-2">
-                Edit
+                Upload or Edit
               </Button>
               <Button onClick={() => handleDelete(contact._id)} color="error">
                 Delete

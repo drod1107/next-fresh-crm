@@ -1,3 +1,5 @@
+// src > lib > mongodb.ts
+
 import mongoose from 'mongoose';
 
 if (!process.env.MONGODB_URI) {
