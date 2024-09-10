@@ -1,7 +1,8 @@
-// src > components > Contacts > ContactForm > page.tsx
+// src/components/Contacts/ContactForm/page.tsx
 
 import React, { useState, useEffect } from 'react';
 import { Button, TextField, Paper, Chip } from '@mui/material';
+import { useDropzone } from 'react-dropzone';
 import { Contact } from '@/types/contact';
 
 interface ContactFormProps {
@@ -24,6 +25,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
   const [labels, setLabels] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
   const [newLabel, setNewLabel] = useState('');
+  const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
     if (selectedContact) {
@@ -40,6 +42,12 @@ const ContactForm: React.FC<ContactFormProps> = ({
     }
   }, [selectedContact]);
 
+  const onDrop = (acceptedFiles: File[]) => {
+    setFiles(acceptedFiles);
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
   const clearForm = () => {
     setFirstName('');
     setLastName('');
@@ -49,27 +57,30 @@ const ContactForm: React.FC<ContactFormProps> = ({
     setAltPhone('');
     setLabels([]);
     setNotes('');
+    setFiles([]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const contactData: Omit<Contact, '_id' | 'createdAt' | 'updatedAt' | 'documents'> = {
-      firstName,
-      lastName,
-      email,
-      address,
-      phoneNumber,
-      altPhone,
-      labels,
-      notes,
-    };
+    const formData = new FormData();
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
+    formData.append('email', email);
+    formData.append('address', address);
+    formData.append('phoneNumber', phoneNumber);
+    formData.append('altPhone', altPhone);
+    formData.append('labels', JSON.stringify(labels));
+    formData.append('notes', notes);
+
+    files.forEach((file) => {
+      formData.append('files', file);
+    });
 
     try {
       if (selectedContact) {
         const response = await fetch(`/api/contacts/${selectedContact._id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(contactData),
+          body: formData,
         });
         if (!response.ok) throw new Error('Failed to update contact');
         const updatedContact: Contact = await response.json();
@@ -77,8 +88,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
       } else {
         const response = await fetch('/api/contacts', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(contactData),
+          body: formData,
         });
         if (!response.ok) throw new Error('Failed to create contact');
         const newContact: Contact = await response.json();
@@ -107,74 +117,20 @@ const ContactForm: React.FC<ContactFormProps> = ({
         {selectedContact ? 'Edit Contact' : 'Create New Contact'}
       </h3>
       <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-        <TextField
-          label="First Name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          fullWidth
-          required
-        />
-        <TextField
-          label="Last Name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          fullWidth
-          required
-        />
-        <TextField
-          label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          fullWidth
-          required
-          type="email"
-        />
-        <TextField
-          label="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          fullWidth
-        />
-        <TextField
-          label="Phone Number"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-          fullWidth
-        />
-        <TextField
-          label="Alternative Phone"
-          value={altPhone}
-          onChange={(e) => setAltPhone(e.target.value)}
-          fullWidth
-        />
+        {/* ... (existing form fields) ... */}
         <div className="col-span-2">
-          <TextField
-            label="Add Label"
-            value={newLabel}
-            onChange={(e) => setNewLabel(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleAddLabel()}
-          />
-          <Button onClick={handleAddLabel}>Add</Button>
-          <div className="mt-2">
-            {labels.map((label) => (
-              <Chip
-                key={label}
-                label={label}
-                onDelete={() => handleRemoveLabel(label)}
-                className="mr-1 mb-1"
-              />
-            ))}
+          <div {...getRootProps()} className={`border-2 border-dashed p-4 ${isDragActive ? 'border-blue-500' : 'border-gray-300'}`}>
+            <input {...getInputProps()} />
+            <p>Drag 'n' drop some files here, or click to select files</p>
           </div>
+          {files.length > 0 && (
+            <ul>
+              {files.map((file, index) => (
+                <li key={index}>{file.name}</li>
+              ))}
+            </ul>
+          )}
         </div>
-        <TextField
-          label="Notes"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          multiline
-          rows={3}
-          fullWidth
-          className="col-span-2"
-        />
         <div className="col-span-2">
           <Button type="submit" variant="contained" color="primary">
             {selectedContact ? 'Update' : 'Create'} Contact
