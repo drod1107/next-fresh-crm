@@ -1,18 +1,17 @@
-// src > components > Dashboard > page.tsx
-
 import React from 'react';
-import ContactCRUD from '../Contacts/ContactCRUD/page';
+import { Typography, Container } from '@mui/material';
 
-const Dashboard = () => {
+const Dashboard: React.FC = () => {
   return (
-    <div>
-      <header style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem' }}>
-        <h1>NextFresh CRM Dashboard</h1>
-      </header>
-      <main>
-        <ContactCRUD />
-      </main>
-    </div>
+    <Container maxWidth="lg">
+      <Typography variant="h2" component="h1" gutterBottom>
+        Dashboard
+      </Typography>
+      <Typography variant="body1">
+        Welcome to your NextFresh CRM Dashboard. Here you can view an overview of your contacts and documents.
+      </Typography>
+      {/* Add more dashboard content here */}
+    </Container>
   );
 };
 

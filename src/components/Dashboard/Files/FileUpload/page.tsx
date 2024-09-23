@@ -6,6 +6,7 @@ import { Button, Select, MenuItem, FormControl, InputLabel, Snackbar, Alert } fr
 
 interface FileUploadProps {
   contactId: string;
+  docId: string;
   onFileUploaded: () => void;
 }
 

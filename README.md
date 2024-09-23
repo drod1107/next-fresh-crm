@@ -1,7 +1,3 @@
-Here’s the updated `README.md` for the root level, which now includes a file directory of the other `README.md` files within the project:
-
----
-
 # Welcome to NextFresh CRM
 
 ## Overview
@@ -26,7 +22,7 @@ NextFresh CRM is a CRM solution built using Next.js 14 with the App Router, Tail
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-repo/next-fresh-crm.git
+   git clone https://github.com/drod1107/next-fresh-crm.git
    cd next-fresh-crm
    ```
 
