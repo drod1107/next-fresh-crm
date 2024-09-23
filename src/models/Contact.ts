@@ -5,7 +5,12 @@ import mongoose from 'mongoose';
 const ContactSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  address: String,
+  address: {
+    street: String,
+    city: String,
+    state: String,
+    zip: Number,
+  },
   phoneNumber: String,
   altPhone: String,
   email: { type: String, required: true, unique: true },
