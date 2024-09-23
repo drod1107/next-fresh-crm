@@ -123,7 +123,7 @@ const DocsCRUD: React.FC = () => {
   const handleViewDoc = async (doc: Doc, documentIndex: number) => {
     try {
       const response = await fetch(`/api/docs?id=${doc._id}&action=view&index=${documentIndex}`, {
-        method: 'PATCH',
+        method: 'GET',
       });
       if (!response.ok) {
         throw new Error('Failed to fetch document content');

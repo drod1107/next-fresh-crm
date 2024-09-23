@@ -1,10 +1,44 @@
 // src/app/api/docs/route.ts
 
+/**
+ * API route for handling CRUD operations on documents.
+ * Supports GET, POST, PUT, and DELETE requests.
+ * 
+ * GET /api/docs
+ *   - Returns a list of documents sorted by updated date.
+ *   - Returns a JSON response with the list of documents.
+ * 
+ * POST /api/docs
+ *   - Creates a new document from the request body.
+ *   - Parses the request body and extracts the document data.
+ *   - If the request includes file uploads, it uploads the files to S3 and
+ *     adds the file URLs to the document data.
+ *   - Creates a new document in the database from the document data.
+ *   - Returns a JSON response with the new document.
+ * 
+ * PUT /api/docs?id={id}
+ *   - Updates an existing document from the request body.
+ *   - Parses the request body and extracts the document data.
+ *   - If the request includes file uploads, it uploads the files to S3 and
+ *     adds the file URLs to the document data.
+ *   - Updates the existing document in the database from the document data.
+ *   - Returns a JSON response with the updated document.
+ * 
+ * DELETE /api/docs?id={id}
+ *   - Deletes an existing document from the database.
+ *   - Returns a JSON response with a success message.
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import Doc from '@/models/Doc';
 import { uploadFileToS3 } from '@/utils/s3';
 
+/**
+ * GET /api/docs
+ *   - Returns a list of documents sorted by updated date.
+ *   - Returns a JSON response with the list of documents.
+ */
 export async function GET(req: NextRequest) {
   try {
     await clientPromise;
@@ -17,6 +51,15 @@ export async function GET(req: NextRequest) {
   }
 }
 
+/**
+ * POST /api/docs
+ *   - Creates a new document from the request body.
+ *   - Parses the request body and extracts the document data.
+ *   - If the request includes file uploads, it uploads the files to S3 and
+ *     adds the file URLs to the document data.
+ *   - Creates a new document in the database from the document data.
+ *   - Returns a JSON response with the new document.
+ */
 export async function POST(req: NextRequest) {
   try {
     await clientPromise;
@@ -33,17 +76,14 @@ export async function POST(req: NextRequest) {
     console.log('Received doc data:', docData);
 
     // Parse labels if they're sent as a JSON string
-if (docData.labels && typeof docData.labels === 'string') {
-  try {
-    docData.labels = JSON.parse(docData.labels);
-  } catch (e) {
-    console.error('Error parsing labels:', e);
-    docData.labels = [];
-  }
-} else if (Array.isArray(docData.labels)) {
-  // If labels is already an array, no need to parse it
-  console.log('Labels is already an array:', docData.labels);
-}
+    if (docData.labels && typeof docData.labels === 'string') {
+      try {
+        docData.labels = JSON.parse(docData.labels);
+      } catch (e) {
+        console.error('Error parsing labels:', e);
+        docData.labels = [];
+      }
+    }
 
     // Handle file uploads
     const files = formData.getAll('files') as File[];
@@ -72,6 +112,15 @@ if (docData.labels && typeof docData.labels === 'string') {
   }
 }
 
+/**
+ * PUT /api/docs?id={id}
+ *   - Updates an existing document from the request body.
+ *   - Parses the request body and extracts the document data.
+ *   - If the request includes file uploads, it uploads the files to S3 and
+ *     adds the file URLs to the document data.
+ *   - Updates the existing document in the database from the document data.
+ *   - Returns a JSON response with the updated document.
+ */
 export async function PUT(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
@@ -127,6 +176,11 @@ export async function PUT(req: NextRequest) {
   }
 }
 
+/**
+ * DELETE /api/docs?id={id}
+ *   - Deletes an existing document from the database.
+ *   - Returns a JSON response with a success message.
+ */
 export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
@@ -147,3 +201,4 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
