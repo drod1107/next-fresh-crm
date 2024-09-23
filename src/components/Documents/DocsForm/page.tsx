@@ -65,33 +65,37 @@ const DocsForm: React.FC<DocsFormProps> = ({ selectedDoc, onDocCreated, onDocUpd
     formData.append('pb_email', user?.primaryEmailAddress?.emailAddress || '');
     formData.append('labels', JSON.stringify(labels));
     formData.append('notes', notes);
-    formData.append('contactId', selectedContact._id);
+    formData.append('contact', selectedContact._id);
 
     files.forEach((file) => {
       formData.append('files', file);
     });
 
     try {
+      const url = selectedDoc ? `/api/docs?id=${selectedDoc._id}` : '/api/docs';
+      const method = selectedDoc ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method: method,
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to ${selectedDoc ? 'update' : 'create'} document`);
+      }
+
+      const docData: Doc = await response.json();
+
       if (selectedDoc) {
-        const response = await fetch(`/api/docs/${selectedDoc._id}`, {
-          method: 'PUT',
-          body: formData,
-        });
-        if (!response.ok) throw new Error('Failed to update doc');
-        const updatedDoc: Doc = await response.json();
-        onDocUpdated(updatedDoc);
+        onDocUpdated(docData);
       } else {
-        const response = await fetch('/api/docs', {
-          method: 'POST',
-          body: formData,
-        });
-        if (!response.ok) throw new Error('Failed to create doc');
-        const newDoc: Doc = await response.json();
-        onDocCreated(newDoc);
+        onDocCreated(docData);
       }
       clearForm();
     } catch (error) {
       console.error('Error submitting doc:', error);
+      alert(error.message);
     }
   };
 

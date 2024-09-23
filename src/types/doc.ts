@@ -1,9 +1,7 @@
-// src/types/doc.ts
-
 import { Contact } from './contact';
 
 export interface Doc {
-  _id: string;
+  _id?: string;  // Optional because it's not present when creating a new doc
   doc_title: string;
   pb_username: string;
   pb_email: string;
@@ -12,9 +10,9 @@ export interface Doc {
   documents: {
     name: string;
     url: string;
-    label: 'tax' | 'estate' | 'estate planning' | 'business' | 'other';
+    label: string;  // Changed to string to match the model
   }[];
-  contact: Contact | string; // Can be a Contact object or just the ID
-  createdAt?: string;
-  updatedAt?: string;
+  contact: Contact | string;
+  createdAt?: Date;  // Changed to Date
+  updatedAt?: Date;  // Changed to Date
 }

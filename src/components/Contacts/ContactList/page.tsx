@@ -45,7 +45,7 @@ const ContactList: React.FC<ContactListProps> = ({
               <Button onClick={() => onViewContact(contact)} className="mr-2">
                 Upload or Edit
               </Button>
-              <Button onClick={() => handleDelete(contact._id)} color="error">
+              <Button onClick={() => handleDelete(contact?._id || '')} color="error">
                 Delete
               </Button>
             </div>

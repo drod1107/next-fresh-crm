@@ -72,7 +72,9 @@ const Dashboard: React.FC = () => {
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h5" gutterBottom>Documents</Typography>
-            <DocsList docs={filteredDocs} onEditDoc={() => {}} onDeleteDoc={() => {}} onViewDoc={() => {}} />
+            <DocsList docs={filteredDocs} onEditDoc={() => { } } onDeleteDoc={() => { } } onViewDoc={() => { } } onDownloadDoc={function (doc: Doc, documentIndex: number): void {
+              throw new Error('Function not implemented.');
+            } } />
           </Paper>
         </Grid>
       </Grid>

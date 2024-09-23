@@ -76,17 +76,17 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ contact, onClose, o
         // Fetch the file content
         const fileResponse = await fetch(signedUrl);
         const blob = await fileResponse.blob();
-        
+
         // Create a temporary URL for the blob
         const blobUrl = window.URL.createObjectURL(blob);
-        
+
         // Create a temporary anchor element and trigger the download
         const link = document.createElement('a');
         link.href = blobUrl;
         link.download = fileName;
         document.body.appendChild(link);
         link.click();
-        
+
         // Clean up
         document.body.removeChild(link);
         window.URL.revokeObjectURL(blobUrl);
@@ -224,8 +224,7 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ contact, onClose, o
           {renderLabels()}
           {renderEditableField('notes', 'Notes')}
           {renderDocuments()}
-          <FileUpload contactId={contact._id} onFileUploaded={handleFileUploaded} docId={''} />
-        </div>
+          <FileUpload contactId={contact._id!} onFileUploaded={handleFileUploaded} docId={''} />        </div>
         <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
           <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
             {snackbar.message}

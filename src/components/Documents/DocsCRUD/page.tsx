@@ -3,7 +3,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { TextField, CircularProgress, Alert, Box, Modal, Typography, Button } from '@mui/material';
+import { TextField, CircularProgress, Alert, Box, Typography, Button } from '@mui/material';
 import DocForm from '../DocsForm/page';
 import DocList from '../DocsList/page';
 import { Doc } from '@/types/doc';
@@ -12,11 +12,9 @@ const DocsCRUD: React.FC = () => {
   const [docs, setDocs] = useState<Doc[]>([]);
   const [filteredDocs, setFilteredDocs] = useState<Doc[]>([]);
   const [selectedDoc, setSelectedDoc] = useState<Doc | null>(null);
-  const [viewedDoc, setViewedDoc] = useState<Doc | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [docContent, setDocContent] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   const fetchDocs = async () => {
@@ -28,6 +26,7 @@ const DocsCRUD: React.FC = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
+      console.log('Fetched docs:', data); // Add this line
       setDocs(data);
       setFilteredDocs(data);
     } catch (error) {
@@ -39,10 +38,17 @@ const DocsCRUD: React.FC = () => {
   };
 
   const filterDocs = useCallback(() => {
-    const filtered = docs.filter(doc =>
-      doc.doc_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doc.notes.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filtered = docs.filter(doc => {
+      const docTitle = doc.doc_title || '';
+      const docNotes = doc.notes || '';
+      const docLabels = doc.labels || [];
+
+      return (
+        docTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        docNotes.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        docLabels.some(label => label.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    });
     setFilteredDocs(filtered);
   }, [docs, searchTerm]);
 
@@ -54,22 +60,54 @@ const DocsCRUD: React.FC = () => {
     filterDocs();
   }, [filterDocs]);
 
-  const handleDocCreated = (newDoc: Doc) => {
-    setDocs(prevDocs => [newDoc, ...prevDocs]);
-    setIsEditing(false);
+  const handleDocCreated = async (newDoc: Doc) => {
+    try {
+      const response = await fetch('/api/docs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        body: JSON.stringify(newDoc),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to create document');
+      }
+      const createdDoc = await response.json();
+      setDocs(prevDocs => [createdDoc, ...prevDocs]);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error creating document:', error);
+      setError('Failed to create document. Please try again.');
+    }
   };
 
-  const handleDocUpdated = (updatedDoc: Doc) => {
-    setDocs(prevDocs =>
-      prevDocs.map(doc => doc._id === updatedDoc._id ? updatedDoc : doc)
-    );
-    setSelectedDoc(null);
-    setIsEditing(false);
+  const handleDocUpdated = async (updatedDoc: Doc) => {
+    try {
+      const response = await fetch(`/api/docs?id=${updatedDoc._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedDoc),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update document');
+      }
+      const updated = await response.json();
+      setDocs(prevDocs =>
+        prevDocs.map(doc => doc._id === updated._id ? updated : doc)
+      );
+      setSelectedDoc(null);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating document:', error);
+      setError('Failed to update document. Please try again.');
+    }
   };
 
   const handleDocDeleted = async (deletedDocId: string) => {
     try {
-      const response = await fetch(`/api/docs/${deletedDocId}`, {
+      const response = await fetch(`/api/docs?id=${deletedDocId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
@@ -82,28 +120,36 @@ const DocsCRUD: React.FC = () => {
     }
   };
 
-  const handleViewDoc = async (doc: Doc) => {
-    setViewedDoc(doc);
-    setLoading(true);
-    setError(null);
+  const handleViewDoc = async (doc: Doc, documentIndex: number) => {
     try {
-      const response = await fetch(`/api/docs/${doc._id}/content`);
+      const response = await fetch(`/api/docs?id=${doc._id}&action=view&index=${documentIndex}`, {
+        method: 'PATCH',
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch document content');
       }
-      const content = await response.text();
-      setDocContent(content);
+      const { viewUrl } = await response.json();
+      window.open(viewUrl, '_blank');
     } catch (error) {
       console.error('Error fetching document content:', error);
       setError('Failed to load document content. Please try again.');
-    } finally {
-      setLoading(false);
     }
   };
 
-  const handleCloseViewer = () => {
-    setViewedDoc(null);
-    setDocContent(null);
+  const handleDownloadDoc = async (doc: Doc, documentIndex: number) => {
+    try {
+      const response = await fetch(`/api/docs?id=${doc._id}&action=download&index=${documentIndex}`, {
+        method: 'PATCH',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch document download link');
+      }
+      const { downloadUrl } = await response.json();
+      window.open(downloadUrl, '_blank');
+    } catch (error) {
+      console.error('Error downloading document:', error);
+      setError('Failed to download document. Please try again.');
+    }
   };
 
   const handleEditDoc = (doc: Doc) => {
@@ -113,7 +159,7 @@ const DocsCRUD: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Document Management</h2>
+      <Typography variant="h4" gutterBottom>Document Management</Typography>
       
       {error && (
         <Alert severity="error" className="mb-4" onClose={() => setError(null)}>
@@ -147,7 +193,7 @@ const DocsCRUD: React.FC = () => {
         className="mb-4"
       />
 
-      {loading && !viewedDoc ? (
+      {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" height="200px">
           <CircularProgress />
         </Box>
@@ -157,46 +203,9 @@ const DocsCRUD: React.FC = () => {
           onEditDoc={handleEditDoc}
           onDeleteDoc={handleDocDeleted}
           onViewDoc={handleViewDoc}
+          onDownloadDoc={handleDownloadDoc}
         />
       )}
-
-      <Modal
-        open={viewedDoc !== null}
-        onClose={handleCloseViewer}
-        aria-labelledby="doc-viewer-modal"
-        aria-describedby="view-document-content"
-      >
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '80%',
-          maxHeight: '80%',
-          overflow: 'auto',
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          p: 4,
-        }}>
-          {viewedDoc && (
-            <>
-              <Typography variant="h6" component="h2" gutterBottom>
-                {viewedDoc.doc_title}
-              </Typography>
-              {loading ? (
-                <CircularProgress />
-              ) : error ? (
-                <Alert severity="error">{error}</Alert>
-              ) : (
-                <pre className="whitespace-pre-wrap">{docContent}</pre>
-              )}
-              <Button onClick={handleCloseViewer} variant="contained" color="primary" className="mt-4">
-                Close
-              </Button>
-            </>
-          )}
-        </Box>
-      </Modal>
     </div>
   );
 };

@@ -221,7 +221,7 @@ const DocDetailView: React.FC<DocDetailViewProps> = ({ doc, onClose, onDocUpdate
           {renderLabels()}
           {renderEditableField('notes', 'Notes')}
           {renderDocuments()}
-          <FileUpload docId={doc._id} onFileUploaded={handleFileUploaded} contactId={''} />
+          <FileUpload docId={doc._id!} onFileUploaded={handleFileUploaded} contactId={''} />
         </div>
         <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
           <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>

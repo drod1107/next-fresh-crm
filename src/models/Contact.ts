@@ -1,5 +1,3 @@
-// src > models > Contact.ts
-
 import mongoose from 'mongoose';
 
 const ContactSchema = new mongoose.Schema({
@@ -9,7 +7,7 @@ const ContactSchema = new mongoose.Schema({
     street: String,
     city: String,
     state: String,
-    zip: Number,
+    zip: String,  // Changed to String to match the type
   },
   phoneNumber: String,
   altPhone: String,
@@ -21,6 +19,6 @@ const ContactSchema = new mongoose.Schema({
     url: String,
     label: String
   }],
-}, { timestamps: true });  // This adds createdAt and updatedAt fields
+}, { timestamps: true });
 
 export default mongoose.models.Contact || mongoose.model('Contact', ContactSchema);

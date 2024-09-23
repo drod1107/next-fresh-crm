@@ -1,7 +1,5 @@
-// src > types > contact.ts
-
 export interface Contact {
-  _id: string;
+  _id?: string;  // Optional because it's not present when creating a new contact
   firstName: string;
   lastName: string;
   email: string;
@@ -9,7 +7,7 @@ export interface Contact {
     street: string;
     city: string;
     state: string;
-    zip: string;
+    zip: string;  // Changed to string to match the model
   };
   phoneNumber: string;
   altPhone: string;
@@ -18,8 +16,8 @@ export interface Contact {
   documents: {
     name: string;
     url: string;
-    label: 'tax' | 'estate' | 'estate planning' | 'business' | 'other';
+    label: string;  // Changed to string to match the model
   }[];
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;  // Changed to Date
+  updatedAt?: Date;  // Changed to Date
 }

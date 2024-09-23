@@ -1,5 +1,3 @@
-// src/models/Doc.ts
-
 import mongoose from 'mongoose';
 
 const DocSchema = new mongoose.Schema({
