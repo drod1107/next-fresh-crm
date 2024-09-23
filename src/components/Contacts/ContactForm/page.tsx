@@ -230,7 +230,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
         <div className="col-span-2">
           <div {...getRootProps()} className={`border-2 border-dashed p-4 ${isDragActive ? 'border-blue-500' : 'border-gray-300'}`}>
             <input {...getInputProps()} />
-            <p>Drag 'n' drop some files here, or click to select files</p>
+            <p>Drag &apos;n&apos; drop some files here, or click to select files</p>
           </div>
           {files.length > 0 && (
             <ul>

@@ -1,4 +1,4 @@
-// src > components > Dashboard > Clients > ClientDetailView > page.tsx
+// src > components > Dashboard > Docs > DocDetailView > page.tsx
 
 'use client';
 
@@ -8,13 +8,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Doc } from '@/types/doc';
 import FileUpload from '../FileUpload/page';
 
-interface ClientDetailViewProps {
+interface DocDetailViewProps {
   doc: Doc;
   onClose: () => void;
   onDocUpdated: (updatedDoc: Doc) => void;
 }
 
-const ClientDetailView: React.FC<ClientDetailViewProps> = ({ doc, onClose, onDocUpdated }) => {
+const DocDetailView: React.FC<DocDetailViewProps> = ({ doc, onClose, onDocUpdated }) => {
   const [editedDoc, setEditedDoc] = useState<Doc>(doc);
   const [editStates, setEditStates] = useState<{ [key: string]: boolean }>({});
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
@@ -213,7 +213,7 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ doc, onClose, onDoc
         >
           <CloseIcon />
         </IconButton>
-        <Typography variant="h4" className="mb-4 pr-10">Client Details</Typography>
+        <Typography variant="h4" className="mb-4 pr-10">Doc Details</Typography>
         <div className="space-y-4">
           {renderEditableField('doc_title', 'Title')}
           {renderEditableField('pb_username', 'Posted by')}
@@ -233,4 +233,4 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ doc, onClose, onDoc
   );
 };
 
-export default ClientDetailView;
+export default DocDetailView;

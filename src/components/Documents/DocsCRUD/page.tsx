@@ -2,13 +2,13 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { TextField, CircularProgress, Alert, Box, Modal, Typography, Button } from '@mui/material';
 import DocForm from '../DocsForm/page';
 import DocList from '../DocsList/page';
 import { Doc } from '@/types/doc';
 
-const DocCRUD: React.FC = () => {
+const DocsCRUD: React.FC = () => {
   const [docs, setDocs] = useState<Doc[]>([]);
   const [filteredDocs, setFilteredDocs] = useState<Doc[]>([]);
   const [selectedDoc, setSelectedDoc] = useState<Doc | null>(null);
@@ -18,14 +18,6 @@ const DocCRUD: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [docContent, setDocContent] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-
-  useEffect(() => {
-    fetchDocs();
-  }, []);
-
-  useEffect(() => {
-    filterDocs();
-  }, [docs, searchTerm]);
 
   const fetchDocs = async () => {
     setLoading(true);
@@ -46,13 +38,21 @@ const DocCRUD: React.FC = () => {
     }
   };
 
-  const filterDocs = () => {
+  const filterDocs = useCallback(() => {
     const filtered = docs.filter(doc =>
       doc.doc_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.notes.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredDocs(filtered);
-  };
+  }, [docs, searchTerm]);
+
+  useEffect(() => {
+    fetchDocs();
+  }, []);
+
+  useEffect(() => {
+    filterDocs();
+  }, [filterDocs]);
 
   const handleDocCreated = (newDoc: Doc) => {
     setDocs(prevDocs => [newDoc, ...prevDocs]);
@@ -201,4 +201,4 @@ const DocCRUD: React.FC = () => {
   );
 };
 
-export default DocCRUD;
+export default DocsCRUD;

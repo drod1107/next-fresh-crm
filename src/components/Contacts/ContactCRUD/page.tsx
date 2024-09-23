@@ -1,12 +1,12 @@
-// src > components > Contacts > ContactCRUD > page.tsx
+// src/components/Contacts/ContactCRUD/page.tsx
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ContactForm from '../ContactForm/page';
 import ContactList from '../ContactList/page';
 import ClientDetailView from '../../Dashboard/Clients/ClientDetailView/page';
-import { TextField, Modal } from '@mui/material';
+import { TextField, Modal, Box } from '@mui/material';
 import { Contact } from '@/types/contact';
 
 const ContactCRUD: React.FC = () => {
@@ -15,14 +15,6 @@ const ContactCRUD: React.FC = () => {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [detailViewOpen, setDetailViewOpen] = useState(false);
-
-  useEffect(() => {
-    fetchContacts();
-  }, []);
-
-  useEffect(() => {
-    filterContacts();
-  }, [contacts, searchTerm]);
 
   const fetchContacts = async () => {
     try {
@@ -37,7 +29,7 @@ const ContactCRUD: React.FC = () => {
     }
   };
 
-  const filterContacts = () => {
+  const filterContacts = useCallback(() => {
     if (searchTerm.trim() === '') {
       setFilteredContacts(contacts);
     } else {
@@ -47,7 +39,15 @@ const ContactCRUD: React.FC = () => {
       );
       setFilteredContacts(filtered);
     }
-  };
+  }, [contacts, searchTerm]);
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  useEffect(() => {
+    filterContacts();
+  }, [filterContacts]);
 
   const handleContactCreated = (newContact: Contact) => {
     setContacts(prevContacts => [newContact, ...prevContacts]);
@@ -76,18 +76,13 @@ const ContactCRUD: React.FC = () => {
     setSelectedContact(null);
   };
 
-  
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Contact Management</h2>
-      <details className="mb-4" open={false}>
-        <summary className="font-bold mb-2 text-lg cursor-pointer hover:underline focus:underline">Add/Edit Contact</summary>
-        <ContactForm
-          selectedContact={selectedContact}
-          onContactCreated={handleContactCreated}
-          onContactUpdated={handleContactUpdated}
-        />
-      </details>
+      <ContactForm
+        selectedContact={selectedContact}
+        onContactCreated={handleContactCreated}
+        onContactUpdated={handleContactUpdated}
+      />
       <TextField
         label="Search Contacts"
         variant="outlined"
@@ -108,7 +103,19 @@ const ContactCRUD: React.FC = () => {
         aria-labelledby="client-detail-modal"
         aria-describedby="client-detail-description"
       >
-        <div>
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '90%',
+          maxWidth: 800,
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+          maxHeight: '90vh',
+          overflow: 'auto',
+        }}>
           {selectedContact && (
             <ClientDetailView
               contact={selectedContact}
@@ -116,7 +123,7 @@ const ContactCRUD: React.FC = () => {
               onContactUpdated={handleContactUpdated}
             />
           )}
-        </div>
+        </Box>
       </Modal>
     </div>
   );

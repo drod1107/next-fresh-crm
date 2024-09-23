@@ -12,7 +12,7 @@ interface DocListProps {
   onViewDoc: (doc: Doc) => void;
 }
 
-const DocList: React.FC<DocListProps> = ({ docs, onEditDoc, onDeleteDoc, onViewDoc }) => {
+const DocsList: React.FC<DocListProps> = ({ docs, onEditDoc, onDeleteDoc, onViewDoc }) => {
   const handleDelete = async (id: string) => {
     try {
       const response = await fetch(`/api/docs/${id}`, { 
@@ -54,4 +54,4 @@ const DocList: React.FC<DocListProps> = ({ docs, onEditDoc, onDeleteDoc, onViewD
   );
 };
 
-export default DocList;
+export default DocsList;
