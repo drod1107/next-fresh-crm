@@ -30,7 +30,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact }) => {
         )}
         {contact.address && (
           <Typography color="text.secondary" className="mb-1">
-            Address: {contact.address}
+            Address: {contact.address.street}, {contact.address.city}, {contact.address.state} {contact.address.zip}
           </Typography>
         )}
         {contact.labels && contact.labels.length > 0 && (

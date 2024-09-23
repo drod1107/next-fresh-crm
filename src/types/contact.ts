@@ -5,7 +5,12 @@ export interface Contact {
   firstName: string;
   lastName: string;
   email: string;
-  address: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
   phoneNumber: string;
   altPhone: string;
   labels: string[];

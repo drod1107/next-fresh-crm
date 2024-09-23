@@ -10,6 +10,7 @@ import theme from "../theme";
 import Script from 'next/script';
 
 export const metadata = {
+  id: 'umami-script',
   title: 'NextFresh CRM',
   description: 'A modern CRM solution',
 };
@@ -19,9 +20,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  return (  
+  return (
     <html lang="en">
       <Script
+        id="umami-script"
         dangerouslySetInnerHTML={{
           __html: `
             <script
@@ -34,8 +36,8 @@ export default function RootLayout({
         }}
       />
 
-          <body>
-          <ClerkProvider>
+      <body>
+        <ClerkProvider>
           <ThemeProvider theme={theme}>
             <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
               <Header />
@@ -44,9 +46,9 @@ export default function RootLayout({
               </Box>
               <Footer />
             </Box>
-            </ThemeProvider>
-            </ClerkProvider>
-          </body>
+          </ThemeProvider>
+        </ClerkProvider>
+      </body>
 
     </html>
   );

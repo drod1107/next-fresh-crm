@@ -224,7 +224,7 @@ const ClientDetailView: React.FC<ClientDetailViewProps> = ({ contact, onClose, o
           {renderLabels()}
           {renderEditableField('notes', 'Notes')}
           {renderDocuments()}
-          <FileUpload contactId={contact._id} onFileUploaded={handleFileUploaded} />
+          <FileUpload contactId={contact._id} onFileUploaded={handleFileUploaded} docId={''} />
         </div>
         <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
           <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>

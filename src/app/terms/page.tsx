@@ -11,7 +11,7 @@ const TermsOfService: React.FC = () => {
           Terms of Service
         </Typography>
         <Typography variant="body1" paragraph>
-          1. Acceptance of Terms: By accessing and using NextFresh CRM (the "Service"), you agree to be bound by these Terms of Service ("Terms"). If you disagree with any part of the terms, you may not access the Service.
+          1. Acceptance of Terms: By accessing and using NextFresh CRM (the &quot;Service&quot;), you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you disagree with any part of the terms, you may not access the Service.
         </Typography>
         <Typography variant="body1" paragraph>
           2. Description of Service: NextFresh CRM is a customer relationship management software as a service (SaaS) platform designed to help businesses manage their contacts and documents.
@@ -29,7 +29,7 @@ const TermsOfService: React.FC = () => {
           6. Termination: We may terminate or suspend your account and access to the Service immediately, without prior notice or liability, for any reason whatsoever.
         </Typography>
         <Typography variant="body1" paragraph>
-          7. Changes to Terms: We reserve the right to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect.
+          7. Changes to Terms: We reserve the right to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days&apos; notice prior to any new terms taking effect.
         </Typography>
         <Typography variant="body1">
           8. Contact Us: If you have any questions about these Terms, please contact us at support@nextfreshcrm.com.

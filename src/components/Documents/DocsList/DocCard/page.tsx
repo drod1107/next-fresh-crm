@@ -8,7 +8,7 @@ interface DocCardProps {
   doc: Doc;
 }
 
-const DocCard: React.FC<DocCardProps> = ({ doc }) => {
+const DocsCard: React.FC<DocCardProps> = ({ doc }) => {
   return (
     <Card className="w-full">
       <CardContent>
@@ -35,4 +35,4 @@ const DocCard: React.FC<DocCardProps> = ({ doc }) => {
   );
 };
 
-export default DocCard;
+export default DocsCard;
